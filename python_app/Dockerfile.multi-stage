@@ -1,0 +1,37 @@
+# ---------- Stage 1: Build dependencies ----------
+FROM python:3.10-slim AS base
+
+LABEL maintainer="phoenix-team"
+
+ARG build_version=1.0.0
+ENV BUILD_VERSION=${build_version}
+
+WORKDIR /app
+
+# Pre-copy only requirements to leverage Docker cache
+COPY requirements.txt .
+
+# Install dependencies into /install
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# ---------- Stage 2: Final image ----------
+FROM python:3.10-slim
+
+LABEL maintainer="phoenix-team"
+
+ARG build_version=1.0.0
+ENV BUILD_VERSION=${build_version}
+
+WORKDIR /app
+
+# Copy installed Python packages from builder
+COPY --from=base /install /usr/local
+
+# Copy application code
+COPY . .
+
+EXPOSE 5000
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+CMD ["python", "app.py"]
