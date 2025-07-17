@@ -28,13 +28,15 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            environment {
-                SONAR_TOKEN = credentials('sonar-token') 
+            agent {
+                docker {
+                    image 'maven:3.9.6-eclipse-temurin-17'  // Java 17 + Maven
+                    args '-v /root/.m2:/root/.m2'  // Optional: Maven cache
+                }
             }
             steps {
-                withSonarQubeEnv('SonarServer') {
-                    sh 'mvn sonar:sonar -Dsonar.projectKey=phoenix \
-                                        -Dsonar.login=$SONAR_TOKEN'
+                withSonarQubeEnv('SonarServer') {  // 'SonarServer' must match Jenkins global config
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=phoenix -Dsonar.login=$SONAR_TOKEN'
                 }
             }
         }
