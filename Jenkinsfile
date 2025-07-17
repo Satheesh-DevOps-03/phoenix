@@ -61,11 +61,11 @@ pipeline {
             }
         }
 
-        stage('Deploy Docker Container to Docker Hub') {
-            steps {
-                sh 'docker run -d --name phoenix-app $FULL_IMAGE'
-            }
-        }
+        // stage('Deploy Docker Container to Docker Hub') {
+        //     steps {
+        //         sh 'docker run -d --name phoenix-app $FULL_IMAGE'
+        //     }
+        // }
     }
 
     post {
