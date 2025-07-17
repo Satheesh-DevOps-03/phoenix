@@ -43,7 +43,7 @@ pipeline {
 
         stage('Quality Gate') {
             steps {
-                timeout(time: 1, unit: 'MINUTES') {  // Optional: avoid hanging forever
+                timeout(time: 5, unit: 'MINUTES') {  // Optional: avoid hanging forever
                     waitForQualityGate abortPipeline: true
                 }
             }
@@ -52,6 +52,8 @@ pipeline {
         stage('Build JAR') {
             steps {
                 sh 'mvn clean package -DskipTests'
+                sh 'ls -ltra'
+                sh 'ls -ltra ./target'
             }
         }
 
