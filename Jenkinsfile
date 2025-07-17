@@ -27,6 +27,18 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            environment {
+                SONAR_TOKEN = credentials('sonar-token') 
+            }
+            steps {
+                withSonarQubeEnv('SonarServer') {
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=phoenix \
+                                        -Dsonar.login=$SONAR_TOKEN'
+                }
+            }
+        }
+
         stage('Build JAR') {
             steps {
                 sh 'mvn clean package -DskipTests'
