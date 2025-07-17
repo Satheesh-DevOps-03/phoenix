@@ -21,11 +21,11 @@ pipeline {
             }
         }
 
-        // stage('Unit Test') {
-        //     steps {
-        //         sh 'mvn test'
-        //     }
-        // }
+        stage('Unit Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
 
         stage('SonarQube Analysis') {
             agent {
@@ -41,25 +41,31 @@ pipeline {
             }
         }
 
-        // stage('Build JAR') {
-        //     steps {
-        //         sh 'mvn clean package -DskipTests'
-        //     }
-        // }
+        stage('Build JAR') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+        }
 
-        // stage('Build Docker Image') {
-        //     steps {
-        //         sh 'docker build -t $FULL_IMAGE .'
-        //     }
-        // }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $FULL_IMAGE .'
+            }
+        }
 
-        // stage('Push to Docker Hub') {
-        //     steps {
-        //         withDockerRegistry([ credentialsId: 'dockerhub-creds', url: '' ]) {
-        //             sh 'docker push $FULL_IMAGE'
-        //         }
-        //     }
-        // }
+        stage('Push to Docker Hub') {
+            steps {
+                withDockerRegistry([ credentialsId: 'dockerhub-creds', url: '' ]) {
+                    sh 'docker push $FULL_IMAGE'
+                }
+            }
+        }
+
+        stage('Deploy Docker Container to Docker Hub') {
+            steps {
+                sh 'docker run -d --name phoenix-app $FULL_IMAGE'
+            }
+        }
     }
 
     post {
