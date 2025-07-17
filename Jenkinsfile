@@ -41,6 +41,14 @@ pipeline {
             }
         }
 
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {  // Optional: avoid hanging forever
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
         stage('Build JAR') {
             steps {
                 sh 'mvn clean package -DskipTests'
