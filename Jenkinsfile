@@ -27,27 +27,27 @@ pipeline {
             }
         }
 
-        // stage('SonarQube Analysis') {
-        //     agent {
-        //         docker {
-        //             image 'maven:3.9.6-eclipse-temurin-17'  // Java 17 + Maven
-        //             args '-v /root/.m2:/root/.m2'  // Optional: Maven cache
-        //         }
-        //     }
-        //     steps {
-        //         withSonarQubeEnv('SonarServer') {  // 'SonarServer' must match Jenkins global config
-        //             sh 'mvn sonar:sonar -Dsonar.projectKey=phoenix-sonar -Dsonar.login=$SONAR_TOKEN'
-        //         }
-        //     }
-        // }
+        stage('SonarQube Analysis') {
+            agent {
+                docker {
+                    image 'maven:3.9.6-eclipse-temurin-17'  // Java 17 + Maven
+                    args '-v /root/.m2:/root/.m2'  // Optional: Maven cache
+                }
+            }
+            steps {
+                withSonarQubeEnv('SonarServer') {  // 'SonarServer' must match Jenkins global config
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=phoenix-sonar -Dsonar.login=$SONAR_TOKEN'
+                }
+            }
+        }
 
-        // stage('Quality Gate') {
-        //     steps {
-        //         timeout(time: 5, unit: 'MINUTES') {  // Optional: avoid hanging forever
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {  // Optional: avoid hanging forever
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
 
         stage('Build JAR') {
             steps {
