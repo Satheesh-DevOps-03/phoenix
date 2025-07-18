@@ -72,6 +72,7 @@ pipeline {
         }
     }
 
+
     post {
         always {
             echo "Build completed. Docker Image: $FULL_IMAGE"
