@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-vol
+  labels:
+    app: pod-vol
+spec:
+  containers:
+  - name: pod-vol
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: cache-vol
+      mountPath: /cache
+    - name: host-vol
+      mountPath: /host-data  
+  volumes:
+  - name: cache-vol
+    emptyDir: {}
+  - name: host-vol
+    hostPath:
+      path: /tmp/data
+      type: DirectoryOrCreate
+  
